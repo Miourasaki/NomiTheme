@@ -1,0 +1,25 @@
+{
+  "name": "default",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev --dotenv .env",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "dependencies": {
+    "@mx-space/api-client": "^1.16.1",
+    "@nuxt/image": "^1.8.1",
+    "axios": "^1.7.7",
+    "dotenv": "^16.4.5",
+    "nuxt": "^3.13.0",
+    "vue": "latest",
+    "vue-router": "latest"
+  },
+  "devDependencies": {
+    "@nuxtjs/google-fonts": "^3.2.0",
+    "@nuxtjs/tailwindcss": "^6.12.1"
+  }
+}

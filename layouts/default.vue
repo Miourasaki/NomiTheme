@@ -5,8 +5,7 @@ import type {UserModel} from "@mx-space/api-client";
 const MasterInfo = useState<UserModel | undefined>("主人的信息",()=>undefined)
 
 import {useClient} from "~/components/client";
-import MasterHeader from "~/components/master/MasterHeader.vue";
-import MasterContextMenu from "~/components/master/MasterContextMenu.vue";
+import MasterHeader from "~/components/header/MasterHeader.vue";
 await useAsyncData("Get Master Data", async () => {
 
   const client = await useClient(false)

@@ -2,17 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html {
-
-}
-
-
-body {
-    /*备选色： rgb(240, 230, 225)*/
-    /*background-color: white;*/
-    /*background-image: ;*/
-}
-
+html {}
 body .bg-fixed > .bg {
     --light-bg: #ffffff;
     background-position: top center;
@@ -21,7 +11,12 @@ body .bg-fixed > .bg {
     background-color: var(--light-bg);
 }
 
-
 .group:hover .group-hover\:rotate {
     transform: rotate3d(1, 1, 1, 45deg);
 }
+
+
+/* js 使用类，无内容  */
+.nomi-context-menu-disable,
+.nomi-context-menu-disable-any
+{}

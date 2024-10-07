@@ -1,9 +1,11 @@
 <script setup lang="ts">
-const now = ref(new Date());
+import RightAccount from "~/components/header/RightAccount.vue";
+
+const now = ref(new Date(0));
 if (process.client) setInterval(()=>now.value = new Date(), 1000)
 
 
-import MasterIcon from "~/components/master/MasterIcon.vue";
+import MasterHeaderIcon from "~/components/header/MasterHeaderIcon.vue";
 
 const mInfo = useMasterStore().info.value
 
@@ -14,7 +16,7 @@ function getWeekday(date: Date) {
   const dayIndex = date.getDay(); // 获取当前日期是星期几
   return weekdays[dayIndex]; // 返回对应的中文星期
 }
-function getPad(obj) {
+function getPad(obj: any): string {
   return String(obj).padStart(2,'0')
 }
 </script>
@@ -25,7 +27,7 @@ function getPad(obj) {
   before:transition-all before:ease-in-out before:transform-gpu">
     <div class="w-1/3 flex items-center h-full ml-3">
 
-      <MasterIcon @click="(event) => {
+      <MasterHeaderIcon @click="(event) => {
       event.stopPropagation()
       useRouter().push('/')
     }" aria-label="传送到主页">
@@ -36,32 +38,25 @@ function getPad(obj) {
             </g>
           </svg>
         </div>
-      </MasterIcon>
+      </MasterHeaderIcon>
 
-      <MasterIcon class="font-medium">
+      <MasterHeaderIcon class="font-medium">
         <div class="text-[0.92rem] mt-[0.08rem]">{{mInfo.name}}</div>
-      </MasterIcon>
+      </MasterHeaderIcon>
 
     </div>
 
     <div class="w-1/3 justify-center flex items-center h-full">
-      <MasterIcon menu-position="center">
+      <MasterHeaderIcon menu-position="center">
         {{now.getFullYear()}}年{{now.getMonth()}}月{{now.getDate()}}日 {{getWeekday(now)}}&nbsp;
         {{getPad(now.getHours())}}:{{getPad(now.getMinutes())}}:{{getPad(now.getSeconds())}}
         <template #menu>
           <div class="w-72 h-52">你好你好你好你好你好</div>
         </template>
-      </MasterIcon>
+      </MasterHeaderIcon>
     </div>
     <div class="w-1/3 flex flex-row-reverse items-center h-full mr-3">
-      <MasterIcon menu-position="right">
-        <div class="w-5 h-5">
-          <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10s10-4.48 10-10S17.52 2 12 2zM7.07 18.28c.43-.9 3.05-1.78 4.93-1.78s4.51.88 4.93 1.78C15.57 19.36 13.86 20 12 20s-3.57-.64-4.93-1.72zm11.29-1.45c-1.43-1.74-4.9-2.33-6.36-2.33s-4.93.59-6.36 2.33A7.95 7.95 0 0 1 4 12c0-4.41 3.59-8 8-8s8 3.59 8 8c0 1.82-.62 3.49-1.64 4.83zM12 6c-1.94 0-3.5 1.56-3.5 3.5S10.06 13 12 13s3.5-1.56 3.5-3.5S13.94 6 12 6zm0 5c-.83 0-1.5-.67-1.5-1.5S11.17 8 12 8s1.5.67 1.5 1.5S12.83 11 12 11z" fill="currentColor"></path></svg>
-        </div>
-        <template #menu>
-        <div class="w-72 h-52">你好你好你好你好你好</div>
-        </template>
-      </MasterIcon>
+      <RightAccount />
     </div>
 
   </header>

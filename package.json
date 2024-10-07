@@ -11,7 +11,9 @@
   },
   "dependencies": {
     "@mx-space/api-client": "^1.16.1",
+    "@nuxt/babel-preset-app": "^2.18.1",
     "@nuxt/image": "^1.8.1",
+    "@vue/babel-plugin-jsx": "^1.2.5",
     "axios": "^1.7.7",
     "dotenv": "^16.4.5",
     "nuxt": "^3.13.0",

@@ -40,9 +40,9 @@ const move = ref({
 const handleMouseDown = (e: MouseEvent) => {
 
   let x = e.clientX - style.value.left
-  let y = e.clientY - 28 - style.value.top
+  let y = e.clientY - style.value.top
 
-  if (style.value.fullscreen) y += style.value.top
+  if (style.value.fullscreen) y += style.value.top -28
 
   move.value = {
     state: true, left: x, top: y
@@ -58,12 +58,12 @@ const handleMouseMove = (e: MouseEvent): void => {
   }
 
   let x = e.clientX
-  let y = e.clientY - 28
+  let y = e.clientY
 
   x -= move.value.left || 0
   y -= move.value.top || 0
 
-  if (y<0) y=0;
+  if (y<=28) y=28;
   style.value.left = x
   style.value.top = y
 
@@ -92,8 +92,9 @@ onUnmounted(() => {
 const direction = ref<"nw"|"n"|"ne"|"e"|"se"|"s"|"sw"|"w"| null>(null)
 
 const handleNResize = (e: MouseEvent) => {
-  let y = style.value.top - (e.clientY - 28)
+  let y = style.value.top - e.clientY
   if (allowYResize(y)) return
+  if (style.value.top <= 28) return
   style.value.height += y
   style.value.top -= y
 }
@@ -104,7 +105,7 @@ const handleEResize = (e: MouseEvent) => {
   style.value.width += x
 }
 const handleSResize = (e: MouseEvent) => {
-  let y = e.clientY - 28 - (style.value.top + style.value.height)
+  let y = e.clientY - (style.value.top + style.value.height)
   if (allowYResize(y)) return
   style.value.height += y
 }
@@ -173,10 +174,10 @@ const handleAllResize = (e: MouseEvent) => {
 <template>
   <div :style="{
     left: style.fullscreen? 0 : style.left + 'px',
-    top:  style.fullscreen? 0 : style.top + 'px',
+    top:  style.fullscreen? '28px' : style.top + 'px',
     width:  style.fullscreen? '100%' : style.width + 'px',
     height: style.fullscreen? '100%' : style.height + 'px',
-  }" ref="win" class="absolute"
+  }" ref="win" class="fixed"
        :class="windowAnim && 'transition-all duration-300 ease-in-out transform-gpu'">
     <div class="w-full h-full overflow-hidden flex flex-col border transition-all"
         :class="style.fullscreen? 'border-t-0': 'rounded-lg'">
@@ -203,12 +204,13 @@ const handleAllResize = (e: MouseEvent) => {
           <slot name="title"/>
         </header>
       </header>
-      <div class="flex-grow w-full bg-white bg-opacity-75 backdrop-blur overflow-auto">
-        <div>
-          <div>Ｍ：{{move}}</div>
-          <div>Ｓ：{{style}}</div>
+      <div class="flex-grow w-full bg-white bg-opacity-75 backdrop-blur overflow-hidden flex flex-col justify-between">
+        <div class="overflow-auto">
+          <slot/>
+          <div class="h-96 bg-slate-100"></div>
+          <div class="h-96 "></div>
         </div>
-        <slot/>
+        <div v-if="style.fullscreen" class="w-full min-h-[27px] bg-transparent"/>
       </div>
     </div>
 

@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import {fa} from "cronstrue/dist/i18n/locales/fa";
+import Scrollbar from "~/layouts/scrollbar.vue";
 
-const win = ref<HTMLDivElement>(null)
+const win = ref<HTMLDivElement | null>(null)
 
 const {
+  title = "",
   defaultSize = { width: 960, height: 560, fullscreen: false },
   minSize = { width: 340, height: 32 },
   maxSize = { width: 960, height: 560 },
   defaultPosition = { left: 30, top: 30 }
 } = defineProps<{
+  title?: string,
   defaultSize?: {width: number, height: number, fullscreen: boolean},
   minSize?: {width: number, height: number},
   maxSize?: {width: number, height: number},
@@ -29,6 +31,20 @@ const setFullScreen = (v: boolean) => {
   if (v) windowAnim.value = true
   else setTimeout(() => windowAnim.value = false, 300)
 }
+
+onMounted(() => {
+  document.addEventListener('mousemove', handleMouseMove)
+  document.addEventListener('mousemove', handleAllResize)
+  document.addEventListener('mouseup', handleMoveStop)
+  document.body.addEventListener('mouseleave', handleMoveStop)
+})
+onUnmounted(() => {
+  document.removeEventListener('mousemove', handleMouseMove)
+  document.removeEventListener('mousemove', handleAllResize)
+  document.removeEventListener('mouseup', handleMoveStop)
+  document.body.removeEventListener('mouseleave', handleMoveStop)
+})
+
 
 
 // Move Handle
@@ -74,19 +90,6 @@ const handleMoveStop = (): void => {
   direction.value = null
 }
 
-onMounted(() => {
-  document.addEventListener('mousemove', handleMouseMove)
-  document.addEventListener('mousemove', handleAllResize)
-  document.addEventListener('mouseup', handleMoveStop)
-  document.addEventListener('mouseleave', handleMoveStop)
-})
-onUnmounted(() => {
-  document.removeEventListener('mousemove', handleMouseMove)
-  document.removeEventListener('mousemove', handleAllResize)
-  document.removeEventListener('mouseup', handleMoveStop)
-  document.removeEventListener('mouseleave', handleMoveStop)
-})
-
 
 // Windows Size Handle
 const direction = ref<"nw"|"n"|"ne"|"e"|"se"|"s"|"sw"|"w"| null>(null)
@@ -116,7 +119,7 @@ const handleWResize = (e: MouseEvent) => {
   style.value.left -= x
 }
 
-const allowXResize = (x?: number = 0): boolean => {
+const allowXResize = (x: number = 0): boolean => {
     if (x>0 && style.value.width >= maxSize?.width) {
       style.value.width = maxSize?.width
       return true
@@ -127,8 +130,7 @@ const allowXResize = (x?: number = 0): boolean => {
     }
     return false
 }
-
-const allowYResize = (y?: number = 0): boolean => {
+const allowYResize = (y: number = 0): boolean => {
   if (y>0 && style.value.height >= maxSize?.height) {
     style.value.height = maxSize?.height
     return true
@@ -169,6 +171,7 @@ const handleAllResize = (e: MouseEvent) => {
   }
 }
 
+
 </script>
 
 <template>
@@ -176,13 +179,13 @@ const handleAllResize = (e: MouseEvent) => {
     left: style.fullscreen? 0 : style.left + 'px',
     top:  style.fullscreen? '28px' : style.top + 'px',
     width:  style.fullscreen? '100%' : style.width + 'px',
-    height: style.fullscreen? '100%' : style.height + 'px',
+    height: style.fullscreen? 'calc(100% - 28px)' : style.height + 'px',
   }" ref="win" class="fixed"
        :class="windowAnim && 'transition-all duration-300 ease-in-out transform-gpu'">
     <div class="w-full h-full overflow-hidden flex flex-col border transition-all"
         :class="style.fullscreen? 'border-t-0': 'rounded-lg'">
       <header @mousedown="handleMouseDown" @dblclick="(e)=>{
-                if (e.target.tagName == 'HEADER') setFullScreen(!style.fullscreen)
+                if (e.target?.tagName == 'HEADER') setFullScreen(!style.fullscreen)
               }"
               class="min-h-8 w-full bg-orange-100 bg-opacity-80 backdrop-blur border-b border-b-amber-200
                  flex items-center justify-between px-4 text-sm text-stone-700 select-none overflow-hidden"
@@ -199,18 +202,18 @@ const handleAllResize = (e: MouseEvent) => {
               class="w-[.9rem] h-[.9rem] rounded-full bg-red-500 border border-red-600 transition-all
                    hover:bg-red-600" />
         </header>
-        <header class="w-1/3 flex items-center justify-center pointer-events-none">Nomi Window</header>
+        <header class="w-1/3 flex items-center justify-center pointer-events-none">{{title}}</header>
         <header class="w-1/3">
           <slot name="title"/>
         </header>
       </header>
       <div class="flex-grow w-full bg-white bg-opacity-75 backdrop-blur overflow-hidden flex flex-col justify-between">
-        <div class="overflow-auto">
+        <Scrollbar>
           <slot/>
           <div class="h-96 bg-slate-100"></div>
           <div class="h-96 "></div>
-        </div>
-        <div v-if="style.fullscreen" class="w-full min-h-[27px] bg-transparent"/>
+        </Scrollbar>
+<!--        <div v-if="style.fullscreen" class="w-full min-h-[27px] bg-black"/>-->
       </div>
     </div>
 

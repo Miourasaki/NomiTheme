@@ -32,7 +32,7 @@ const master = useMasterStore()
   <div class="w-screen h-screen flex flex-col transition-all ease-in-out transform-gpu">
     <MasterHeader />
     <div id="master" class="w-full flex-grow relative">
-      <Application><slot/></Application>
+      <Application :title="`${MasterInfo?.name} ☆ Blogs`"><slot/></Application>
     </div>
   </div>
 

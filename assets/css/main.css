@@ -2,17 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
-html {}
+html {
+    overflow: hidden;
+}
+*::selection {
+    color: white;
+    background: rgba(100, 116, 139, 0.5);
+}
 body .bg-fixed > .bg {
     --light-bg: #ffffff;
     background-position: top center;
     background-image: url(~/assets/image/background.png);
     background-attachment: fixed;
     background-color: var(--light-bg);
-}
-
-.group:hover .group-hover\:rotate {
-    transform: rotate3d(1, 1, 1, 45deg);
 }
 
 

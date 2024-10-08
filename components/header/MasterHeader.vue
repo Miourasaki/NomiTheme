@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import RightAccount from "~/components/header/RightAccount.vue";
 
-const now = ref(new Date(0));
+const now = useState<Date>("Now Datetime")
 if (process.client) setInterval(()=>now.value = new Date(), 1000)
 
 
 import MasterHeaderIcon from "~/components/header/MasterHeaderIcon.vue";
+import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
+import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
 
 const mInfo = useMasterStore().info.value
 
@@ -22,15 +24,12 @@ function getPad(obj: any): string {
 </script>
 
 <template>
-  <header class="w-full border-b shadow-sm flex items-center justify-between h-7 select-none z-50
+  <header id="header" class="w-full border-b shadow-sm flex items-center justify-between h-7 select-none z-50
   before:bg-opacity-70 before:backdrop-blur before:bg-gray-200 before:absolute before:inset-0 relative
   before:transition-all before:ease-in-out before:transform-gpu">
     <div class="w-1/3 flex items-center h-full ml-3">
 
-      <MasterHeaderIcon @click="(event) => {
-      event.stopPropagation()
-      useRouter().push('/')
-    }" aria-label="传送到主页">
+      <MasterHeaderIcon aria-label="传送到主页">
         <div class="w-5 h-5 group-hover:rotate group-hover:rotate-[360deg] transition-all duration-1000 ease-in-out">
           <svg viewBox="0 0 200 200">
             <g>
@@ -38,30 +37,47 @@ function getPad(obj: any): string {
             </g>
           </svg>
         </div>
+        <template #menu>
+          <div class="min-w-32 flex flex-col gap-0.5">
+            <ContextMenuItem to="/about">关于本机</ContextMenuItem>
+            <ContextMenuLine />
+
+            <ContextMenuItem>系统偏好设置</ContextMenuItem>
+            <ContextMenuItem>系统帮助
+              <template #key>F1</template>
+            </ContextMenuItem>
+            <ContextMenuLine />
+
+            <ContextMenuItem>任务管理器</ContextMenuItem>
+            <ContextMenuLine />
+
+            <ContextMenuItem disabled>锁定屏幕</ContextMenuItem>
+            <ContextMenuItem disabled>注销</ContextMenuItem>
+          </div>
+        </template>
       </MasterHeaderIcon>
 
-      <MasterHeaderIcon class="font-medium">
-        <div class="text-[0.92rem] mt-[0.08rem]">{{mInfo.name}}</div>
+      <MasterHeaderIcon class="font-medium" disabled>
+        <div class="text-[0.92rem] mt-[0.08rem]">{{mInfo?.name}}</div>
       </MasterHeaderIcon>
 
     </div>
 
     <div class="w-1/3 justify-center flex items-center h-full">
       <MasterHeaderIcon menu-position="center">
-        {{now.getFullYear()}}年{{now.getMonth()}}月{{now.getDate()}}日 {{getWeekday(now)}}&nbsp;
+        {{now.getFullYear()}}年{{now.getMonth() + 1}}月{{now.getDate()}}日 {{getWeekday(now)}}&nbsp;
         {{getPad(now.getHours())}}:{{getPad(now.getMinutes())}}:{{getPad(now.getSeconds())}}
         <template #menu>
           <div class="w-72 h-52">你好你好你好你好你好</div>
         </template>
       </MasterHeaderIcon>
     </div>
-    <div class="w-1/3 flex flex-row-reverse items-center h-full mr-3">
+    <div class="w-1/3 justify-end flex items-center h-full mr-3">
+      <MasterHeaderIcon>
+        {{now.toUTCString()}}
+      </MasterHeaderIcon>
       <RightAccount />
     </div>
 
   </header>
 </template>
-
-<style scoped>
-
-</style>

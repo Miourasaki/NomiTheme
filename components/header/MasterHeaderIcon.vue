@@ -1,18 +1,35 @@
 <script setup lang="ts">
 
-import {fa} from "cronstrue/dist/i18n/locales/fa";
-
 const menu = ref(false)
+const menuHidden = ref(true)
+const changMenu = (c:boolean) => {
+  if (c) {
+    menuHidden.value = false
+    setTimeout(() => {menu.value = true},10)
+  }else {
+    menu.value = false
+    setTimeout(() => {menuHidden.value = true}, 150)
+  }
+}
+
+watch(menu, () => {
+  let time
+  if (!menu.value) time = 500
+  else time = 0
+
+
+})
 
 const props = defineProps<{
   menuPosition?: "left" | "center" | "right"
+  disabled?: boolean
 }>()
 
 </script>
 
 <template>
   <div class="h-full relative nomi-context-menu-disable-any">
-    <button @click="menu = !menu"
+    <button @click="changMenu(!menu)" :disabled="disabled"
             :class="menu && 'bg-gray-300 bg-opacity-65 backdrop-blur'"
             class="flex gap-3 items-center px-2.5 h-full text-[0.9rem]
     hover:bg-gray-300 hover:bg-opacity-65 hover:backdrop-blur rounded-md
@@ -23,14 +40,14 @@ const props = defineProps<{
          @click="menu = false"
          @contextmenu="menu = false"
     ><div id="header" class="h-7 w-full"></div></div>
-    <div class="w-auto h-auto absolute top-9 overflow-hidden z-20" :class="`
-                  ${!menu && 'pointer-events-none'}
+    <div class="w-auto h-auto absolute top-9 overflow-hidden z-20"
+         :class="`${!menu && 'pointer-events-none'} ${menuHidden && 'hidden'}
                   ${props.menuPosition == 'left' && 'left-0'}
                   ${props.menuPosition == 'center' && 'right-1/2 translate-x-1/2'}
                   ${props.menuPosition == 'right' && 'right-0'}`">
       <div :class="`${!menu && '-translate-y-[calc(100%+4rem)]'}`"
-           class="px-3 py-4 border rounded-xl z-20 transition-all ease-out transform-gpu
-    bg-opacity-80 backdrop-blur-[6px] bg-gray-100">
+           class="p-1.5 border rounded-xl z-20 transition-all ease-out transform-gpu
+    bg-opacity-80 backdrop-blur-[6px] bg-gray-100 w-auto">
         <slot name="menu" />
       </div>
     </div>

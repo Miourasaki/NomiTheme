@@ -4,15 +4,14 @@
     <div>{{ useMasterStore().info.value}}</div>
   </div>
   <div class="">
-    <TestComp msg="Hello World" />
-    <div>
-
-    </div>
+<!--   <MasterInfo />-->
   </div>
 </template>
 
 <script setup lang="ts">
 
 import {useMasterStore} from "~/composables/master";
+import MasterInfo from "~/components/index/MasterInfo.vue";
+import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
 
 </script>

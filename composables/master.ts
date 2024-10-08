@@ -4,9 +4,15 @@ import {useClient} from "~/components/client";
 export let masterInfo: UserModel = {}
 
 export const useMasterStore = () => {
-    const info = useState<UserModel | undefined>("主人的信息", ()=> {
-        return undefined
-    })
-    return {info}
+    const info = useState<UserModel>("Master Data")
+    const now = useState<Date>("Now Datetime",()=> new Date())
+    const contextMenu = useState<boolean>("Context Menu State", ()=> false)
+    const contextTarget = useState<HTMLDivElement>("Context Menu Target")
+
+
+    return {info, now, contextmenu: {
+        state: contextMenu,
+        target: contextTarget
+    }}
 }
 

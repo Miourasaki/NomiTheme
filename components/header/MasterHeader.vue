@@ -8,6 +8,7 @@ if (process.client) setInterval(()=>now.value = new Date(), 1000)
 import MasterHeaderIcon from "~/components/header/MasterHeaderIcon.vue";
 import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
 import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
+import {useDock} from "~/composables/dock";
 
 const mInfo = useMasterStore().info.value
 
@@ -21,12 +22,17 @@ function getWeekday(date: Date) {
 function getPad(obj: any): string {
   return String(obj).padStart(2,'0')
 }
+
+const f = useDock().fullscreen
+
 </script>
 
 <template>
-  <header id="header" class="w-full border-b shadow-sm flex items-center justify-between h-7 select-none z-50
-  before:bg-opacity-70 before:backdrop-blur before:bg-gray-200 before:absolute before:inset-0 relative
-  before:transition-all before:ease-in-out before:transform-gpu">
+  <header id="header"
+          :class="f? ' before:bg-orange-100':'border-b shadow-sm before:bg-gray-200'"
+          class="w-full flex items-center justify-between h-7 select-none z-50
+  before:bg-opacity-80 before:backdrop-blur before:absolute before:inset-0 relative
+  before:transition-all before:ease-in-out before:duration-500 before:transform-gpu transition-all ease-in-out duration-300">
     <div class="w-1/3 flex items-center h-full ml-3">
 
       <MasterHeaderIcon aria-label="传送到主页">

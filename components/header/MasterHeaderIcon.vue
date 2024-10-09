@@ -32,7 +32,7 @@ const props = defineProps<{
     <button @click="changMenu(!menu)" :disabled="disabled"
             :class="menu && 'bg-gray-300 bg-opacity-65 backdrop-blur'"
             class="flex gap-3 items-center px-2.5 h-full text-[0.9rem]
-    hover:bg-gray-300 hover:bg-opacity-65 hover:backdrop-blur rounded-md
+    hover:bg-gray-700 hover:bg-opacity-10 hover:backdrop-blur rounded-md
     transition-all ease-in-out transform-gpu group duration-500">
       <slot />
     </button>

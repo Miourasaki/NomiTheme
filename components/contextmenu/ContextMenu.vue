@@ -3,12 +3,14 @@ import {ref} from "vue";
 import ContextCopy from "~/components/contextmenu/ContextCopy.vue";
 import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
 import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
+import ContextHeader from "~/components/contextmenu/ContextHeader.vue";
 
 const menuStyle = ref({
   left: `0`,
   top: `0`,
 })
 const master = useMasterStore()
+const target = master.contextmenu.target
 
 const menuOpenLast = ref(false)
 const menuOpen = master.contextmenu.state
@@ -24,7 +26,7 @@ const handleContextMenu = (event: MouseEvent) => {
   }
   event.preventDefault();
   const tg: HTMLElement = event.target as HTMLElement;
-  master.contextmenu.target.value = tg;
+  target.value = tg;
   if (tg.closest(".nomi-context-menu-disable-any")) return;
   if (tg.classList.contains("nomi-context-menu-disable")) return;
 
@@ -44,7 +46,7 @@ const handleContextMenu = (event: MouseEvent) => {
   if (y >= inner.height - offset.height - 1) y -= (offset.height - (inner.height - y)) + 1;
   if (x >= inner.weight - offset.weight - 1) x -= (offset.weight - (inner.weight - x)) + 1;
 
-  if (tg.id.toUpperCase() == "HEADER") y = 28
+  if (tg.id == "header") y = 28
 
   // 设置自定义菜单的位置
   menuStyle.value = {
@@ -70,6 +72,8 @@ onBeforeUnmount(() => {
        bg-gray-100 bg-opacity-75 backdrop-blur-sm min-w-44"
          :class="`${!menuOpen && '-translate-y-full'}`">
       <div class="w-auto flex flex-col gap-0.5 text-start">
+        <ContextHeader v-if="target?.id == 'header'"/>
+
         <ContextCopy/>
         <ContextMenuLine/>
         <ContextMenuItem @click="lastUseOrigin = true" aria-label="Use the built-in content menu">使用原生内容菜单

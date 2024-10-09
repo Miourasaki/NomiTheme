@@ -1,16 +1,11 @@
 <script setup lang="ts">
 
 import type {UserModel} from "@mx-space/api-client";
+import {useClient} from "~/utils/client";
+import MasterHeader from "~/components/default/header/MasterHeader.vue";
+import ContextMenu from "~/components/default/contextmenu/ContextMenu.vue";
 
 const MasterInfo = useState<UserModel | undefined>("Master Data", () => undefined)
-
-import {useClient} from "~/components/client";
-import MasterHeader from "~/components/header/MasterHeader.vue";
-import ContextMenu from "~/components/contextmenu/ContextMenu.vue";
-import Application from "~/layouts/application.vue";
-import Scrollbar from "~/layouts/scrollbar.vue";
-
-
 await useAsyncData("Get Master Data", async () => {
 
   const client = await useClient(false)
@@ -21,8 +16,22 @@ await useAsyncData("Get Master Data", async () => {
   return {code: 0, master}
 })
 
-const master = useMasterStore()
 
+import {useWindows} from "~/composables/windowManager";
+import Application from "~/layouts/application.vue";
+import ClientWindow from "~/components/ClientWindow.vue";
+
+const windows = useWindows();
+
+const temp = (e) => {
+  e.preventDefault();
+
+  const form = new FormData(e.target)
+  windows.createWindow(form.get('sid'), {
+    title: form.get('title'),
+    titleColor: JSON.parse(form.get('color')),
+  })
+}
 </script>
 
 <template>
@@ -35,24 +44,28 @@ const master = useMasterStore()
   <div class="w-screen h-screen flex flex-col transition-all ease-in-out transform-gpu">
     <MasterHeader/>
     <div id="master" class="w-full flex-grow relative">
-      <Application sid="main" :title="`${MasterInfo?.name} ☆ Blogs`"
-                   :fullscreen="true"
-                   :min-size="{
-                     width: 640,
-                     height: 440,
-                   }"
-                   :max-size="{
-                     width: 1056,
-                     height: 660
-                   }">
+            <slot />
+            <DevData>
+              <template #form>
+                <form @submit="temp" class="flex flex-col w-40 gap-3 m-2">
+                  <input name="title" class="border" />
+                  <input name="sid" class="border" />
+                  <input name="color" class="border" value="[255,255,255]" />
+                  <button class="border">submit</button>
+                </form>
+              </template>
+              <div>Ｐ：{{windows.process}}</div>
+              <div>Ｆ：{{windows.focus}}</div>
+            </DevData>
+      <Context v-for="[pid, win] in windows.process.value" :key="pid">
+        <Application :pid="pid" :p="win" :title="win.title" :style="{
+          zIndex: win.zIndex + windows.getWindowZIndex(pid),
+        }">
+          <ClientWindow :nid="win.slot" />
+        </Application>
 
-        <div class=" w-full flex justify-center">
-          <div class="max-w-[66rem] min-w-[40rem]">
-            <slot/>
-          </div>
-        </div>
+      </Context>
 
-      </Application>
     </div>
   </div>
 

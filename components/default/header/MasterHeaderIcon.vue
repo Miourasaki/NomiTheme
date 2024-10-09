@@ -1,5 +1,7 @@
 <script setup lang="ts">
 
+import {useWindowRouter} from "~/composables/windowManager";
+
 const menu = ref(false)
 const menuHidden = ref(true)
 const changMenu = (c:boolean) => {
@@ -16,12 +18,11 @@ watch(menu, () => {
   let time
   if (!menu.value) time = 500
   else time = 0
-
-
 })
 
 const props = defineProps<{
   menuPosition?: "left" | "center" | "right"
+  to?: string
   disabled?: boolean
 }>()
 
@@ -29,7 +30,10 @@ const props = defineProps<{
 
 <template>
   <div class="h-full relative nomi-context-menu-disable-any">
-    <button @click="changMenu(!menu)" :disabled="disabled"
+    <button @click="() => {
+      if (to) useWindowRouter().push(to)
+      else changMenu(!menu)
+    }" :disabled="disabled"
             :class="menu && 'bg-gray-300 bg-opacity-65 backdrop-blur'"
             class="flex gap-3 items-center px-2.5 h-full text-[0.9rem]
     hover:bg-gray-700 hover:bg-opacity-10 hover:backdrop-blur rounded-md
@@ -40,7 +44,7 @@ const props = defineProps<{
          @click="menu = false"
          @contextmenu="menu = false"
     ><div id="header" class="h-7 w-full"></div></div>
-    <div class="w-auto h-auto absolute top-9 overflow-hidden z-20"
+    <div @click="menu = false" class="w-auto h-auto absolute top-9 overflow-hidden z-20"
          :class="`${!menu && 'pointer-events-none'} ${menuHidden && 'hidden'}
                   ${props.menuPosition == 'left' && 'left-0'}
                   ${props.menuPosition == 'center' && 'right-1/2 translate-x-1/2'}

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import MasterHeaderIcon from "~/components/header/MasterHeaderIcon.vue";
-import { useClient } from "~/components/client";
+import MasterHeaderIcon from "~/components/default/header/MasterHeaderIcon.vue";
+import { useClient } from "~/utils/client";
 
 const now = useMasterStore().now
 

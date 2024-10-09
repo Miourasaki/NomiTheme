@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import {ref} from "vue";
-import ContextCopy from "~/components/contextmenu/ContextCopy.vue";
-import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
-import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
-import ContextHeader from "~/components/contextmenu/ContextHeader.vue";
+import ContextCopy from "~/components/default/contextmenu/ContextCopy.vue";
+import ContextMenuLine from "~/components/default/contextmenu/ContextMenuLine.vue";
+import ContextMenuItem from "~/components/default/contextmenu/ContextMenuItem.vue";
+import ContextHeader from "~/components/default/contextmenu/ContextHeader.vue";
 
 const menuStyle = ref({
   left: `0`,

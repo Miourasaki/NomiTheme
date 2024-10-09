@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
-import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
+import ContextMenuLine from "~/components/default/contextmenu/ContextMenuLine.vue";
+import ContextMenuItem from "~/components/default/contextmenu/ContextMenuItem.vue";
 </script>
 
 <template>

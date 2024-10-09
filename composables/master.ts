@@ -1,5 +1,5 @@
 import type {UserModel} from "@mx-space/api-client";
-import {useClient} from "~/components/client";
+import {useClient} from "~/utils/client";
 
 export let masterInfo: UserModel = {}
 

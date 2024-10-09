@@ -1,7 +1,7 @@
 <script setup lang="ts">
 
-import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
-import {CommandIcon} from "~/components/contextmenu/MasterKeyIcon";
+import ContextMenuItem from "~/components/default/contextmenu/ContextMenuItem.vue";
+import {CommandIcon} from "~/components/default/contextmenu/MasterKeyIcon";
 
 const master = useMasterStore()
 

@@ -2,51 +2,67 @@
 import Scrollbar from "~/layouts/scrollbar.vue";
 import {useScrollbar} from "~/composables/scrollbar";
 import {useDock} from "~/composables/dock";
+import DevData from "~/components/DevData.vue";
 
 const win = ref<HTMLElement>()
 
 const {
-  sid= "" ,title = "",
-  fullscreen = false,
-  defaultSize = {width: 960, height: 560},
-  minSize = {width: 340, height: 32},
-  maxSize = {width: 960, height: 560},
-  defaultPosition = {left: 60, top: 60}
+  pid= 0 , p,
+  // component
 } = defineProps<{
-  sid: string,
-  title?: string,
-  fullscreen: boolean,
-  defaultSize?: { width: number, height: number },
-  minSize?: { width: number, height: number },
-  maxSize?: { width: number, height: number },
-  defaultPosition?: { left: number, top: number },
+  pid: number,
+  p: WinInterface,
+  // component: {
+  //   type: Object,
+  //   required: true,
+  // },
 }>()
 
 const style = ref({
-  width: defaultSize?.width,
-  height: defaultSize?.height,
+  width: 0,
+  height: 0,
   fullscreen: false,
 
-  left: defaultPosition?.left,
-  top: defaultPosition?.top,
+  left: 0,
+  top: 0,
 })
 onMounted(()=>{
-  if (fullscreen) setFullScreen(true)
+  if (p.fullScreen) style.value.fullscreen = true
+  setTimeout(()=>{windowAnim.value = false}, 300)
+
+  style.value.width = p.size.width
+  style.value.height = p.size.height
+
+  style.value.left = p.position.left
+  style.value.top = p.position.top
+
 })
-const windowAnim = ref(false);
+const windowAnim = ref(!p.fullScreen);
 const setFullScreen = (v: boolean) => {
-  style.value.fullscreen = v
-  if (v) windowAnim.value = true
-  else setTimeout(() => windowAnim.value = false, 300)
+  if (p.allowFullScreen) {
+    style.value.fullscreen = v
+    if (v) windowAnim.value = true
+    else setTimeout(() => windowAnim.value = false, 300)
+  }
 }
 
+const windows = useWindows()
 
-const f = useDock().fullscreen
-f.value = style.value.fullscreen
-watch(style.value, ()=>f.value = style.value.fullscreen)
+const dock = useDock()
+dock.fullscreen.value = style.value.fullscreen
+watch(style.value, ()=> {
+  dock.fullscreen.value = style.value.fullscreen
+  if (style.value.fullscreen) {
+    dock.targetPid.value = pid
+  }
+})
 
-const handleFocus = (e: FocusEvent) => {
-  if (style.value.fullscreen) f.value = true
+const handleFocus = () => {
+  if (style.value.fullscreen) {
+    dock.fullscreen.value = true
+    dock.targetPid.value = pid
+  }
+  windows.focusOnWindow(pid)
 }
 
 onMounted(() => {
@@ -84,8 +100,8 @@ const handleMouseDown = (e: MouseEvent) => {
 }
 const handleMouseMove = (e: MouseEvent): void => {
   if (!move.value.state) return
-  if (style.value.fullscreen) {
-    style.value.fullscreen = false
+  if (style.value.fullscreen && e.layerY > 30) {
+    if (p.allowFullScreen) style.value.fullscreen = false
     windowAnim.value = false
     // style.value.top += move.value.top
     // move.value.top = 28
@@ -101,6 +117,10 @@ const handleMouseMove = (e: MouseEvent): void => {
   style.value.left = x
   style.value.top = y
 
+  const selection = window.getSelection();
+  if (selection) {
+    selection.removeAllRanges(); // 清除所有选中的范围
+  }
 
 }
 const handleMoveStop = (): void => {
@@ -138,23 +158,23 @@ const handleWResize = (e: MouseEvent) => {
 }
 
 const allowXResize = (x: number = 0): boolean => {
-  if (x > 0 && style.value.width >= maxSize?.width) {
-    style.value.width = maxSize?.width
+  if (x > 0 && style.value.width >= p.maxSize.width) {
+    style.value.width = p.maxSize.width
     return true
   }
-  if (x < 0 && style.value.width <= minSize?.width) {
-    style.value.width = minSize?.width
+  if (x < 0 && style.value.width <= p.minSize.width) {
+    style.value.width = p.minSize.width
     return true
   }
   return false
 }
 const allowYResize = (y: number = 0): boolean => {
-  if (y > 0 && style.value.height >= maxSize?.height) {
-    style.value.height = maxSize?.height
+  if (y > 0 && style.value.height >= p.maxSize.height) {
+    style.value.height = p.maxSize.height
     return true
   }
-  if (y < 0 && style.value.height <= minSize?.height) {
-    style.value.height = minSize?.height
+  if (y < 0 && style.value.height <= p.minSize.height) {
+    style.value.height = p.minSize.height
     return true
   }
   return false
@@ -186,14 +206,24 @@ const handleAllResize = (e: MouseEvent) => {
 }
 
 
+
+// minimize & delete operate
+const handleClose = () => {
+  windowAnim.value = true
+  style.value = {
+    top: 27, left: 0, height: 0, width: 0
+  }
+  setTimeout(() => {windows.deleteWindow(pid)}, 500)
+}
+
 </script>
 
 <template>
-  <div @click="handleFocus" @scroll="handleFocus" :style="{
+  <div @mousedown="handleFocus" @scroll="handleFocus" :style="{
     left: style.fullscreen? 0 : style.left + 'px',
     top:  style.fullscreen? '28px' : style.top + 'px',
     width:  style.fullscreen? '100%' : style.width + 'px',
-    height: style.fullscreen? 'calc(100% - 28px)' : style.height + 'px',
+    height: style.fullscreen? 'calc(100% - 28px)' : style.height + 'px'
   }" ref="win" class="fixed"
        :class="windowAnim && 'transition-all duration-300 ease-in-out transform-gpu'">
     <div class="w-full h-full overflow-hidden flex flex-col border transition-all"
@@ -201,29 +231,39 @@ const handleAllResize = (e: MouseEvent) => {
       <header @mousedown="handleMouseDown" @dblclick="(e)=>{
                 if (e.target?.tagName == 'HEADER') setFullScreen(!style.fullscreen)
               }"
-              class="min-h-8 w-full bg-orange-100 bg-opacity-80 backdrop-blur border-b border-b-amber-200
+              :style="{
+        backgroundColor: `rgb(${p.titleColor[0]} ${p.titleColor[1]} ${p.titleColor[2]} / 0.9)`,
+        borderColor: `rgb(${p.titleColor[0] - 10} ${p.titleColor[1] - 10} ${p.titleColor[2] - 10} / 1)`
+              }"
+              class="min-h-8 w-full backdrop-blur border-b
                  flex items-center justify-between px-4 text-sm text-stone-700 select-none overflow-hidden"
               :class="style.fullscreen? '': ''">
         <header class="w-1/3 flex flex-row-reverse items-center justify-end gap-2.5">
-          <button
+          <button @click="handleClose"
               class="w-[.9rem] h-[.9rem] rounded-full bg-green-500 border border-green-600 transition-all
                    hover:bg-green-600"/>
-          <button
-              @click="setFullScreen(!style.fullscreen)"
+          <button v-if="p.allowFullScreen" @click="setFullScreen(!style.fullscreen)"
               class="w-[.9rem] h-[.9rem] rounded-full bg-yellow-500 border border-yellow-600 transition-all
                    hover:bg-yellow-600"/>
-          <button
+          <button @click="handleClose"
               class="w-[.9rem] h-[.9rem] rounded-full bg-red-500 border border-red-600 transition-all
                    hover:bg-red-600"/>
         </header>
-        <header class="w-1/3 flex items-center justify-center pointer-events-none">{{ title }}</header>
+        <header class="w-1/3 flex items-center justify-center pointer-events-none">{{ p.title }}</header>
         <header class="w-1/3">
           <slot name="title"/>
         </header>
       </header>
       <div class="flex-grow w-full bg-white bg-opacity-75 backdrop-blur overflow-hidden flex flex-col justify-between">
         <Scrollbar>
-          <slot/>
+          <slot />
+<!--          <component :is="component" />-->
+          <DevData>
+            <div>Ｍ：{{move}}</div>
+            <div>Ｄ：{{direction}} Ａ： {{windowAnim}}</div>
+            <div>Ｐ：{{p}}</div>
+            <div>Ｓ：{{style}}</div>
+          </DevData>
         </Scrollbar>
         <!--        <div v-if="style.fullscreen" class="w-full min-h-[27px] bg-black"/>-->
       </div>

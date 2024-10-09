@@ -1,13 +1,13 @@
 <script setup lang="ts">
-import RightAccount from "~/components/header/RightAccount.vue";
+import RightAccount from "~/components/default/header/RightAccount.vue";
 
 const now = useState<Date>("Now Datetime")
 if (process.client) setInterval(()=>now.value = new Date(), 1000)
 
 
-import MasterHeaderIcon from "~/components/header/MasterHeaderIcon.vue";
-import ContextMenuItem from "~/components/contextmenu/ContextMenuItem.vue";
-import ContextMenuLine from "~/components/contextmenu/ContextMenuLine.vue";
+import MasterHeaderIcon from "~/components/default/header/MasterHeaderIcon.vue";
+import ContextMenuItem from "~/components/default/contextmenu/ContextMenuItem.vue";
+import ContextMenuLine from "~/components/default/contextmenu/ContextMenuLine.vue";
 import {useDock} from "~/composables/dock";
 
 const mInfo = useMasterStore().info.value
@@ -23,15 +23,32 @@ function getPad(obj: any): string {
   return String(obj).padStart(2,'0')
 }
 
-const f = useDock().fullscreen
+const dock = useDock()
+const windows = useWindows()
+
+
+const headerColor = () => {
+  const win = windows.getWindow(dock.targetPid.value)
+  return 'rgb(' +
+      win?.titleColor[0] + ' ' +
+      win?.titleColor[1] + ' ' +
+      win?.titleColor[2] + ' / 0.9)'
+}
 
 </script>
 
+
+<style scoped>
+
+</style>
 <template>
   <header id="header"
-          :class="f? ' before:bg-orange-100':'border-b shadow-sm before:bg-gray-200'"
+          :style="{
+            '--header-color': headerColor()
+          }"
+          :class="dock.fullscreen.value ? 'before:bg-[var(--header-color)]':'border-b shadow-sm before:bg-slate-200'"
           class="w-full flex items-center justify-between h-7 select-none z-50
-  before:bg-opacity-80 before:backdrop-blur before:absolute before:inset-0 relative
+  before:bg-opacity-90 before:backdrop-blur before:absolute before:inset-0 relative
   before:transition-all before:ease-in-out before:duration-500 before:transform-gpu transition-all ease-in-out duration-300">
     <div class="w-1/3 flex items-center h-full ml-3">
 
@@ -55,6 +72,9 @@ const f = useDock().fullscreen
             <ContextMenuLine />
 
             <ContextMenuItem>任务管理器</ContextMenuItem>
+            <ContextMenuItem to="/">
+              索引页
+            </ContextMenuItem>
             <ContextMenuLine />
 
             <ContextMenuItem disabled>锁定屏幕</ContextMenuItem>
@@ -63,7 +83,7 @@ const f = useDock().fullscreen
         </template>
       </MasterHeaderIcon>
 
-      <MasterHeaderIcon class="font-medium" disabled>
+      <MasterHeaderIcon class="font-medium" to="/">
         <div class="text-[0.92rem] mt-[0.08rem]">{{mInfo?.name}}</div>
       </MasterHeaderIcon>
 

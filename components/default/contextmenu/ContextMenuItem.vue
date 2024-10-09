@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import {useWindowRouter} from "~/composables/windowManager";
+
 const menuOpen = useMasterStore().contextmenu
 const props = defineProps<{
   onClick?: (event: Event) => void
@@ -12,7 +14,7 @@ const props = defineProps<{
   <a :href="to" :tabindex="(!menuOpen || disabled) ? -1: 1" @click="(e)=>{
     e.preventDefault()
     if (!disabled) {
-      if (to) useRouter().push(to)
+      if (to) useWindowRouter().push(to)
       else if (onClick) onClick(e)
     }
   }"

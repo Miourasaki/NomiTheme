@@ -15,10 +15,10 @@ const props = defineProps<{
   }" class="flex select-none">
     <div
         :style="{
-            backgroundColor: color? color : 'rgb(251 146 60)',
+            backgroundColor: color? color : 'rgb(206,182,213)',
         }"
         class="w-auto h-9 rounded-full border border- range-500 overflow-hidden text-gray-100 flex items-center">
-      <div v-if="$slots.icon" class="h-full w-[calc(2.25rem-2px)] rounded-full px-2.5 flex items-center justify-center"
+      <div v-if="$slots.icon" class="h-full w-[calc(2.25rem-2px)] rounded-full px-2 flex items-center justify-center"
            :class="$slots.default && 'bg-black bg-opacity-30'">
         <slot name="icon" />
       </div>

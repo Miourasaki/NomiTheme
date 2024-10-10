@@ -99,9 +99,9 @@ const headerColor = () => {
       </MasterHeaderIcon>
     </div>
     <div class="w-1/3 justify-end flex items-center h-full mr-3">
-      <MasterHeaderIcon>
-        {{now.toUTCString()}}
-      </MasterHeaderIcon>
+<!--      <MasterHeaderIcon>-->
+<!--        {{now.toUTCString()}}-->
+<!--      </MasterHeaderIcon>-->
       <RightAccount />
     </div>
 

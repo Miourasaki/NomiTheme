@@ -1,7 +1,4 @@
-import type {List} from "postcss/lib/list";
-import {includes} from "superjson/dist/util";
-import {SymbolKind} from "vscode-languageserver-types";
-import Array = SymbolKind.Array;
+import {useDock} from "~/composables/dock";
 
 export interface WinInterface {
 
@@ -21,33 +18,17 @@ export interface WinInterface {
     position?: { left: number, top: number },
 }
 
-export class Window implements WinInterface {
-    pid: number
-    sid: string
-    zIndex: number = 10
-
-    constructor(pid: number, sid: string, v: WinInterface) {
-        this.pid = pid;
-        this.sid = sid;
-
-        this.title = v.title = "";
-        this.fullscreen = v.fullscreen || false;
-        this.size = v.size || {width: 960, height: 560};
-        this.minSize = v.minSize || {width: 340, height: 32};
-        this.maxSize = v.maxSize || {width: 960, height: 560};
-        this.position = v.position || {left: 60, top: 60};
-    }
-}
 
 
 export const useWindows = () => {
+    // 为什么useState不能用class啊😭😭😭😭
     const process = useState<Map<number, WinInterface>>("WM - Process", () => new Map())
     const focus = useState<Array<number>>("WM - FocusList", () => [])
 
     const focusOnWindow = (pid: number) => {
 
-        const to = getWindow(pid).sid
-        if (to.startsWith("/")) useRouter().push(to).then()
+        const to = getWindow(pid)?.sid
+        if (to?.startsWith("/")) useRouter().push(to).then()
 
         const newArr = focus.value.filter(num => num !== pid);
         newArr.push(pid)
@@ -57,9 +38,7 @@ export const useWindows = () => {
         return focus.value.indexOf(pid)
     }
 
-    const getWindow = (pid: number): WinInterface => {
-        return process.value.get(pid)
-    }
+    const getWindow = (pid: number): WinInterface | undefined => process.value.get(pid)
     const createWindow = (sid: string, v: WinInterface) => {
 
         const pid = v.pid || Math.floor(Math.random() * 65537); // 0 到 65536 的随机整数
@@ -102,14 +81,13 @@ export const useWindows = () => {
 
 export const useWindowRouter = () => {
     return {
-        push: (to?: string = "") => {
-            const wins = useWindows()
-
+        push: (to: string = "") => {
+            const router = useRouter()
             if (to == useRoute().fullPath) {
-                useRouter().push("_temp").then(() => {
-                    useRouter().push(to).then()
+                router.replace("_temp").then(() => {
+                    router.replace(to).then()
                 })
-            } else useRouter().push(to).then();
+            } else router.push(to).then();
 
         }
     }

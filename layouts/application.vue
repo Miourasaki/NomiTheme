@@ -28,13 +28,14 @@ const style = ref({
 })
 onMounted(()=>{
   if (p.fullScreen) style.value.fullscreen = true
+
   setTimeout(()=>{windowAnim.value = false}, 300)
 
-  style.value.width = p.size.width
-  style.value.height = p.size.height
+  style.value.width = p.size!.width
+  style.value.height = p.size!.height
 
-  style.value.left = p.position.left
-  style.value.top = p.position.top
+  style.value.left = p.position!.left
+  style.value.top = p.position!.top
 
 })
 const windowAnim = ref(!p.fullScreen);
@@ -49,9 +50,9 @@ const setFullScreen = (v: boolean) => {
 const windows = useWindows()
 
 const dock = useDock()
-dock.fullscreen.value = style.value.fullscreen
+dock.fullscreen.value = style.value.fullscreen || false
 watch(style.value, ()=> {
-  dock.fullscreen.value = style.value.fullscreen
+  dock.fullscreen.value = style.value.fullscreen || false
   if (style.value.fullscreen) {
     dock.targetPid.value = pid
   }
@@ -158,23 +159,23 @@ const handleWResize = (e: MouseEvent) => {
 }
 
 const allowXResize = (x: number = 0): boolean => {
-  if (x > 0 && style.value.width >= p.maxSize.width) {
-    style.value.width = p.maxSize.width
+  if (x > 0 && style.value.width >= p.maxSize!.width) {
+    style.value.width = p.maxSize!.width
     return true
   }
-  if (x < 0 && style.value.width <= p.minSize.width) {
-    style.value.width = p.minSize.width
+  if (x < 0 && style.value.width <= p.minSize!.width) {
+    style.value.width = p.minSize!.width
     return true
   }
   return false
 }
 const allowYResize = (y: number = 0): boolean => {
-  if (y > 0 && style.value.height >= p.maxSize.height) {
-    style.value.height = p.maxSize.height
+  if (y > 0 && style.value.height >= p.maxSize!.height) {
+    style.value.height = p.maxSize!.height
     return true
   }
-  if (y < 0 && style.value.height <= p.minSize.height) {
-    style.value.height = p.minSize.height
+  if (y < 0 && style.value.height <= p.minSize!.height) {
+    style.value.height = p.minSize!.height
     return true
   }
   return false
@@ -211,6 +212,7 @@ const handleAllResize = (e: MouseEvent) => {
 const handleClose = () => {
   windowAnim.value = true
   style.value = {
+    fullscreen: false,
     top: 27, left: 0, height: 0, width: 0
   }
   setTimeout(() => {windows.deleteWindow(pid)}, 500)
@@ -229,11 +231,11 @@ const handleClose = () => {
     <div class="w-full h-full overflow-hidden flex flex-col border transition-all"
          :class="style.fullscreen? 'border-t-0': 'rounded-lg'">
       <header @mousedown="handleMouseDown" @dblclick="(e)=>{
-                if (e.target?.tagName == 'HEADER') setFullScreen(!style.fullscreen)
+                if ((e.target as HTMLElement).tagName == 'HEADER') setFullScreen(!style.fullscreen)
               }"
               :style="{
-        backgroundColor: `rgb(${p.titleColor[0]} ${p.titleColor[1]} ${p.titleColor[2]} / 0.9)`,
-        borderColor: `rgb(${p.titleColor[0] - 10} ${p.titleColor[1] - 10} ${p.titleColor[2] - 10} / 1)`
+        backgroundColor: `rgb(${p.titleColor![0]} ${p.titleColor![1]} ${p.titleColor![2]} / 0.9)`,
+        borderColor: `rgb(${p.titleColor![0] - 10} ${p.titleColor![1] - 10} ${p.titleColor![2] - 10} / 1)`
               }"
               class="min-h-8 w-full backdrop-blur border-b
                  flex items-center justify-between px-4 text-sm text-stone-700 select-none overflow-hidden"

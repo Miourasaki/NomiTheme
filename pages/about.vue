@@ -19,3 +19,4 @@ windows.createWindow("/about", {
   size: s, minSize: s, maxSize: s
 })
 </script>
+<template></template>

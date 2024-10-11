@@ -218,6 +218,11 @@ const handleClose = () => {
   setTimeout(() => {windows.deleteWindow(pid)}, 500)
 }
 
+const ofw = () => {
+  if (style.value.fullscreen) return window.innerWidth
+  else return style.value.width
+}
+
 </script>
 
 <template>
@@ -227,7 +232,12 @@ const handleClose = () => {
     width:  style.fullscreen? '100%' : style.width + 'px',
     height: style.fullscreen? 'calc(100% - 28px)' : style.height + 'px'
   }" ref="win" class="fixed"
-       :class="windowAnim && 'transition-all duration-300 ease-in-out transform-gpu'">
+       :class="`${windowAnim && 'transition-all duration-300 ease-in-out transform-gpu'}
+                ${ofw() < 640 ? 'nomi-win-default' :
+                  ofw() < 768 ? 'nomi-win-sm' :
+                  ofw() < 1024 ? 'nomi-win-md' :
+                  ofw() < 1280 ? 'nomi-win-lg' :
+                  'nomi-win-xl'}`">
     <div class="w-full h-full overflow-hidden flex flex-col border transition-all"
          :class="style.fullscreen? 'border-t-0': 'rounded-lg'">
       <header @mousedown="handleMouseDown" @dblclick="(e)=>{
@@ -242,16 +252,16 @@ const handleClose = () => {
               :class="style.fullscreen? '': ''">
         <header class="w-1/3 flex flex-row-reverse items-center justify-end gap-2.5">
           <button @click="handleClose"
-              class="w-[.9rem] h-[.9rem] rounded-full bg-green-500 border border-green-600 transition-all
+              class="min-w-[.9rem] min-h-[.9rem] rounded-full bg-green-500 border border-green-600 transition-all
                    hover:bg-green-600"/>
           <button v-if="p.allowFullScreen" @click="setFullScreen(!style.fullscreen)"
-              class="w-[.9rem] h-[.9rem] rounded-full bg-yellow-500 border border-yellow-600 transition-all
+              class="min-w-[.9rem] min-h-[.9rem] rounded-full bg-yellow-500 border border-yellow-600 transition-all
                    hover:bg-yellow-600"/>
           <button @click="handleClose"
-              class="w-[.9rem] h-[.9rem] rounded-full bg-red-500 border border-red-600 transition-all
+              class="min-w-[.9rem] min-h-[.9rem] rounded-full bg-red-500 border border-red-600 transition-all
                    hover:bg-red-600"/>
         </header>
-        <header class="w-1/3 flex items-center justify-center pointer-events-none">{{ p.title }}</header>
+        <header class="w-1/3 flex items-center justify-center pointer-events-none truncate">{{ p.title }}</header>
         <header class="w-1/3">
           <slot name="title"/>
         </header>
@@ -259,15 +269,7 @@ const handleClose = () => {
       <div class="flex-grow w-full bg-white bg-opacity-75 backdrop-blur overflow-hidden flex flex-col justify-between">
         <Scrollbar>
           <slot />
-<!--          <component :is="component" />-->
-          <DevData>
-            <div>Ｍ：{{move}}</div>
-            <div>Ｄ：{{direction}} Ａ： {{windowAnim}}</div>
-            <div>Ｐ：{{p}}</div>
-            <div>Ｓ：{{style}}</div>
-          </DevData>
         </Scrollbar>
-        <!--        <div v-if="style.fullscreen" class="w-full min-h-[27px] bg-black"/>-->
       </div>
     </div>
 
@@ -290,6 +292,14 @@ const handleClose = () => {
       <div @mousedown="direction = 'w'"
            class="absolute top-0 -left-1.5 w-1.5 h-full bg-transparent cursor-w-resize z-10"></div>
     </div>
+
+
+<!--    <DevData>-->
+<!--      <div>Ｍ：{{move}}</div>-->
+<!--      <div>Ｄ：{{direction}} Ａ： {{windowAnim}}</div>-->
+<!--      <div>Ｐ：{{p}}</div>-->
+<!--      <div>Ｓ：{{style}}</div>-->
+<!--    </DevData>-->
   </div>
 </template>
 

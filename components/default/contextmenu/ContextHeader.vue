@@ -12,7 +12,10 @@ import ContextMenuItem from "~/components/default/contextmenu/ContextMenuItem.vu
     终端
   </ContextMenuItem>
   <ContextMenuLine/>
-
+  <ContextMenuItem to="/code">
+    通过 Code 打开
+  </ContextMenuItem>
+  <ContextMenuLine/>
 </template>
 
 <style scoped>

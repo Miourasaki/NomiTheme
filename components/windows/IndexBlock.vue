@@ -8,6 +8,7 @@ defineProps<{
   title?: string
   link?: string
   color?: string
+  class?: string
 }>()
 
 </script>
@@ -33,7 +34,7 @@ defineProps<{
       </RoundTitle>
     </div>
     <div class=" mt-2 relative">
-      <Scrollbar class="w-full flex gap-7 py-7 mt-3">
+      <Scrollbar class="w-full flex gap-5 py-5">
         <!--        START-->
         <slot />
         <!--        END-->

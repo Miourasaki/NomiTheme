@@ -1,19 +1,17 @@
 <script setup lang="ts">
 import {useWindowRouter} from "~/composables/windowManager";
-import {height, width} from "ipx";
-
 const windows = useWindows();
 const winRouter = useWindowRouter()
 winRouter.push()
 
-  windows.createWindow("/", {
-    title: useMasterStore().info.value.name + " ☆ Index",
+  windows.createWindow("/friends", {
+    title: useMasterStore().info.value.name + "的通讯录",
     titleColor: [210,210,210],
-    size: {width:980, height:570},
+    size: {width:650, height:470},
     minSize: {width:650, height: 32},
-    maxSize: {width: 1320, height:760},
-    pid: 1,
-    slot: 'index'
+    maxSize: {width: 980, height:760},
+    pid: 100,
+    slot: 'friends'
   })
 </script>
 <template></template>

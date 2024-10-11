@@ -99,10 +99,10 @@ const handleMoveStop = (): void => {
 </script>
 
 <template>
-  <div @resize="style.height = ele?.clientHeight / ele?.scrollHeight" ref="ele" class="overflow-auto scrollbar" :class="move.stateY && 'select-none'">
+  <div @resize="style.height = ele?.clientHeight / ele?.scrollHeight" ref="ele" class="overflow-auto scrollbar w-full h-full" :class="move.stateY && 'select-none'">
     <div class="absolute w-full h-full inset-0" v-if="move.stateY || move.stateX" />
     <slot/>
-    <div v-if="ele?.scrollHeight != ele?.clientHeight"
+    <div v-if="ele?.scrollHeight > ele?.clientHeight"
         class="absolute h-full w-3 right-0 top-0 group transition-all duration-75 text-stone-400
               hover:bg-white hover:bg-opacity-75 hover:backdrop-blur flex flex-col z-10"
          :class="move.stateY && 'bg-white bg-opacity-75 backdrop-blur pointer-events-none'">
@@ -150,7 +150,7 @@ const handleMoveStop = (): void => {
       </button>
     </div>
 
-    <div v-if="ele?.scrollWidth != ele?.clientWidth"
+    <div v-if="ele?.scrollWidth > ele?.clientWidth"
          class="absolute w-full h-3 left-0 bottom-0 group transition-all duration-75 text-stone-400
               hover:bg-white hover:bg-opacity-75 hover:backdrop-blur flex"
          :class="move.stateX && 'bg-white bg-opacity-75 backdrop-blur pointer-events-none'">

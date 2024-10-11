@@ -11,7 +11,8 @@ const props = defineProps<{
 </script>
 
 <template>
-  <a :href="to" :tabindex="(!menuOpen || disabled) ? -1: 1" @click="(e)=>{
+  <a v-if="to" :href="to"></a>
+  <button :tabindex="(!menuOpen || disabled) ? -1: 1" @click="(e)=>{
     e.preventDefault()
     if (!disabled) {
       if (to) useWindowRouter().push(to)
@@ -32,7 +33,7 @@ const props = defineProps<{
          ">
       <slot name="key"/>
     </div>
-  </a>
+  </button>
 </template>
 
 <style scoped>

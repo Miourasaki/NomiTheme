@@ -5,12 +5,48 @@ const MioMarkdown = defineComponent({
     setup(props) {
         const split = props.text?.split("\n")
 
+        const codeBlock = ref<boolean>(false)
+        let code = []
+
         return () => (<div class={`text-stone-700`} title={""}>
             {split.map((item, index) => {
-                return (
-                    <PersonStem text={item} key={index}/>
+
+                if (item.trim().startsWith("```") && codeBlock.value) {
+                    codeBlock.value = false
+                    return (<>
+                        <PersonCode list={code} />
+                    </>)
+                } else if (codeBlock.value) code.push(item)
+                else if (item.trim().startsWith("```") && !codeBlock.value) {
+                    codeBlock.value = true
+                    code = []
+                } else return (
+                    <PersonStem text={item} codeBlock={codeBlock.value} key={index}/>
                 )
             })}
+        </div>)
+    }
+})
+
+const PersonCode = defineComponent({
+    props: {
+        list: Array<string>
+    },
+    setup(props) {
+
+        return () => (<div class={`border p-7 bg-gray-200 bg-opacity-20 backdrop-blur-sm rounded`}>
+            {props.list.map((item, index) => {
+                return (<>
+                    <div class={`flex items-center group`} key={index}>
+                        <div class={`relative w-8 text-stone-400 text-sm`}>
+                            <span class={`group-hover:opacity-0`}>-</span>
+                            <span class={`absolute inset-0 group-hover:opacity-100 opacity-0`}>{index+1}.</span>
+                        </div>
+                        <div>{item}</div>
+                    </div>
+                </>)
+                }
+            )}
         </div>)
     }
 })
@@ -64,14 +100,9 @@ const PersonStem = defineComponent({
             return () => <div class={`w-full border-y`}></div>
         }
 
-
-        if (props.text?.trim().startsWith("```")) {
-            return () => <div class={`border-t border-red-500`}>这是一个代码块的测试</div>
-        }
-
         return () => <>
             <PersonLeaf text={props.text}/>
-            <br />
+            <br/>
         </>
 
     }
@@ -83,19 +114,12 @@ const PersonLeaf = defineComponent({
     },
     setup(props) {
         let text = props.text + ""
-        // 图片
-        text = text.replace(/\!\[(.*?)\]\((.*?)\)/g, '<img src="$2" alt="$1" />');
-        // 连接
-        text = text.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" style="text-decoration-line: underline;" class="hover:text-sky-600" target="_blank">$1</a>');
-        // 粗体
+        text = text.replace(/!\[(.*?)]\((.*?)\)/g, '<img src="$2" alt="$1" />');
+        text = text.replace(/\[(.*?)]\((.*?)\)/g, '<a href="$2" style="text-decoration-line: underline;" class="hover:text-sky-600" target="_blank">$1</a>');
         text = text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-        // 斜体
         text = text.replace(/\*(.*?)\*/g, '<em>$1</em>');
-        // 粗体加斜体
         text = text.replace(/\*\*\*(.*?)\*\*\*/g, '<strong><em>$1</em></strong>');
-        // 删除线（这里使用 <s> 标签，但你也可以用 <del> 或 <strike>）
         text = text.replace(/~~(.*?)~~/g, '<s>$1</s>');
-        text = text.replace(/`((?:(?!```).)*?)`/g, '<code style="border: 1px solid rgb(200,200,200);padding: 2px 4px; border-radius: 5px; background: rgb(240 240 240 / 0.5)">$1</code>');
         text = text.replace(/`((?:(?!```).)*?)`/g, '<code style="border: 1px solid rgb(200,200,200);padding: 2px 4px; border-radius: 5px; background: rgb(240 240 240 / 0.5)">$1</code>');
 
         return () => (<span v-html={text}></span>)

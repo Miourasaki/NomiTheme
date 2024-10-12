@@ -23,7 +23,7 @@ const post = ref(props.data.data)
       <div class="max-w-[66rem] min-w-[40rem] w-full px-20">
 <!--s-->
         <div class="mt-10 text-xl">{{post.title}}</div>
-        <div class="mt-4 w-full">
+        <div class="mt-12  w-full">
           <MarkdownMain :text="post.text"></MarkdownMain>
         </div>
 

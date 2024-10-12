@@ -133,14 +133,6 @@
 
       </div>
     </div>
-
-    <!--  <footer class=" w-full h-28 bg-orange-400">-->
-    <!--    <div>a</div>-->
-    <!--  </footer>-->
-    <DevData>
-<!--      <div>{{ useMasterStore().info.value }}</div>-->
-      <div>{{posts}}</div>
-    </DevData>
   </div>
 </template>
 

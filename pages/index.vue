@@ -1,12 +1,7 @@
 <script setup lang="ts">
-import {useWindowRouter} from "~/composables/windowManager";
-import {height, width} from "ipx";
 
-const windows = useWindows();
-const winRouter = useWindowRouter()
-winRouter.push()
 
-  windows.createWindow("/", {
+defineWindow("/", {
     title: useMasterStore().info.value.name + " ☆ Index",
     titleColor: [210,210,210],
     size: {width:980, height:570},

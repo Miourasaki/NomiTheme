@@ -24,13 +24,14 @@ const props = defineProps<{
   menuPosition?: "left" | "center" | "right"
   to?: string
   disabled?: boolean
+  ariaLabel?: string
 }>()
 
 </script>
 
 <template>
   <div class="h-full relative nomi-context-menu-disable-any">
-    <button @click="() => {
+    <button :aria-label="ariaLabel" @click="() => {
       if (to) useWindowRouter().push(to)
       else changMenu(!menu)
     }" :disabled="disabled"

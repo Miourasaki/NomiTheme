@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import {useWindowRouter} from "~/composables/windowManager";
-const windows = useWindows();
-const winRouter = useWindowRouter()
-winRouter.push()
 
-  windows.createWindow("/friends", {
+defineWindow("/friends", {
     title: useMasterStore().info.value.name + "的通讯录",
     titleColor: [210,210,210],
     size: {width:650, height:470},

@@ -6,13 +6,14 @@ const props = defineProps<{
   onClick?: (event: Event) => void
   to?: string
   disabled?: boolean
+  ariaLabel?: string
 }>()
 
 </script>
 
 <template>
-  <a v-if="to" :href="to"></a>
-  <button :tabindex="(!menuOpen || disabled) ? -1: 1" @click="(e)=>{
+  <a v-if="to" :href="to" :aria-label="ariaLabel"></a>
+  <button :aria-label="ariaLabel" :tabindex="(!menuOpen || disabled) ? -1: 1" @click="(e)=>{
     e.preventDefault()
     if (!disabled) {
       if (to) useWindowRouter().push(to)

@@ -48,18 +48,18 @@ const temp = (e) => {
     <MasterHeader/>
     <div id="master" class="w-full flex-grow relative">
             <slot />
-            <DevData>
-              <template #form>
-                <form @submit="temp" class="flex flex-col w-40 gap-3 m-2">
-                  <input name="title" class="border" />
-                  <input name="sid" class="border" />
-                  <input name="color" class="border" value="[255,255,255]" />
-                  <button class="border">submit</button>
-                </form>
-              </template>
-              <div>Ｐ：{{windows.process}}</div>
-              <div>Ｆ：{{windows.focus}}</div>
-            </DevData>
+<!--            <DevData>-->
+<!--              <template #form>-->
+<!--                <form @submit="temp" class="flex flex-col w-40 gap-3 m-2">-->
+<!--                  <input name="title" class="border" />-->
+<!--                  <input name="sid" class="border" />-->
+<!--                  <input name="color" class="border" value="[255,255,255]" />-->
+<!--                  <button class="border">submit</button>-->
+<!--                </form>-->
+<!--              </template>-->
+<!--              <div>Ｐ：{{windows.process}}</div>-->
+<!--              <div>Ｆ：{{windows.focus}}</div>-->
+<!--            </DevData>-->
       <Context v-for="[pid, win] in windows.process.value" :key="pid">
         <Application :pid="pid" :p="win" :title="win.title" :style="{
           zIndex: win.zIndex + windows.getWindowZIndex(pid),

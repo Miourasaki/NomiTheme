@@ -48,6 +48,7 @@ const setFullScreen = (v: boolean) => {
 }
 
 const windows = useWindows()
+const winRouter = useWindowRouter()
 
 const dock = useDock()
 dock.fullscreen.value = style.value.fullscreen || false
@@ -64,6 +65,7 @@ const handleFocus = () => {
     dock.targetPid.value = pid
   }
   windows.focusOnWindow(pid)
+
 }
 
 onMounted(() => {

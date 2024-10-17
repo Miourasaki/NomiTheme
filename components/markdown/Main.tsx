@@ -3,10 +3,10 @@ const MioMarkdown = defineComponent({
         text: String
     },
     setup(props) {
-        const split = props.text?.split("\n")
+        const split = props.text?.split("\n") || []
 
         const codeBlock = ref<boolean>(false)
-        let code = []
+        let code: string[] = []
 
         return () => (<div class={`text-stone-700`} title={""}>
             {split.map((item, index) => {
@@ -34,8 +34,10 @@ const PersonCode = defineComponent({
     },
     setup(props) {
 
+        const list = props.list || []
+
         return () => (<div class={`border p-7 bg-gray-200 bg-opacity-20 backdrop-blur-sm rounded`}>
-            {props.list.map((item, index) => {
+            {list.map((item, index) => {
                 return (<>
                     <div class={`flex items-center group`} key={index}>
                         <div class={`relative w-8 text-stone-400 text-sm`}>

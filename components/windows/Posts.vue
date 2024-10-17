@@ -1,18 +1,11 @@
 <script setup lang="ts">
-import {useDataStore} from "~/composables/data";
-import axios from "axios";
 
 const props = defineProps<{
   data?: object
 }>()
 
-const post = ref(props.data.data)
+const post = ref(props.data?.data || {title: "", text: ""})
 
-// onMounted(()=>{
-//    axios.get(`/api/post?id=${props.data.sid}`)
-//       .then((r) => post.value = r.data);
-//
-// })
 
 </script>
 

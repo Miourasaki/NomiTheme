@@ -1,75 +1,29 @@
-# Nuxt 3 Minimal Starter
+# NomiOS
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+一个模仿操作系统的个人网站,
 
-## Setup
+为 [Mix Space](https://github.com/mx-space) 服务的个人站点前端。
 
-Make sure to install the dependencies:
+以下是一些使用 Shiro 的示例站点：
 
-```bash
-# npm
-npm install
+- [https://space.mio.am](https://space.mio.am)
 
-# pnpm
-pnpm install
+欢迎你来体验垃圾代码 ！
 
-# yarn
-yarn install
+## :sparkles: 特征
 
-# bun
-bun install
-```
+1. :art: **UI 现代化，简洁不简单**：用户界面设计现代化，简洁而不简单，让你的体验更加流畅。
 
-## Development Server
+## :wrench: 技术栈
 
-Start the development server on `http://localhost:3000`:
+- NuxtJS
+- TailwindCSS
 
-```bash
-# npm
-npm run dev
+## 📄 使用文档
 
-# pnpm
-pnpm run dev
+暂时没有的说~
 
-# yarn
-yarn dev
+## :camera: 截图
 
-# bun
-bun run dev
-```
 
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+写完后再截图
